@@ -9,66 +9,38 @@ class ContributorsViewController:  UIViewController{
     var repoNamePassedByContri: String!
     var userReposContri: [GitHubRepoContri] = []
     
+    var acivity = UIActivityIndicatorView(style: .large)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        acivity.hidesWhenStopped = true
+        acivity.center = view.center
+        view.addSubview(acivity)
+        
+        let backgroundView = UIView()
+        backgroundView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+        backgroundView.backgroundColor = UIColor(white: 0, alpha: 0.5) // semi-transparent black
+        backgroundView.center = self.view.center
+        
+        self.view.addSubview(backgroundView)
+        acivity.startAnimating()
+        
+        let homeButton = UIBarButtonItem(image: UIImage(named: "home1.png"), style: .plain, target: self, action: #selector(homeButtonTapped))
+        
+        self.navigationItem.rightBarButtonItem = homeButton
         contriTable.register(UINib(nibName: "TableViewCellContri", bundle: nil), forCellReuseIdentifier: "CustomCell")
-        fetchcontribtors(username: usernamePassedByContri, repo: repoNamePassedByContri)
+        ApiHandling.fetchContributors(username: usernamePassedByContri, repoName: repoNamePassedByContri) { (result,error) in
+            self.updateUIForContri(result!)
+            self.acivity.stopAnimating()
+            backgroundView.removeFromSuperview()
+            
+        }
+        title = "Contributors"
         let headerView = contriHeader
         contriTable.tableHeaderView = headerView
     }
     
-    func fetchcontribtors(username :String,repo: String){
-        let base_url = "https://api.github.com/"
-        let additional_user_of_user = "repos/\(username)/\(repo)/contributors"
-        let final_url_string = base_url + additional_user_of_user
-    
-        let instance = ApiManager()
-        instance.hitApi(final_url_string){
-            (data,error) in
-            do {
-                let decoder = JSONDecoder()
-                let userReposContri = try decoder.decode([GitHubRepoContri].self, from: data!)
-                
-                DispatchQueue.main.async {
-                    let reposcontriString = userReposContri.map { $0.login }.joined(separator: "\n")
-                    self.userReposContri = userReposContri
-                    self.contriTable.reloadData()
-                    print("Repos:\n\(reposcontriString)")
-                }
-            } catch {
-                print("[JSON DECODING ERROR: \(error.localizedDescription)]")
-            }
-        }
-    }
-    func downloadImage(from urlString: String,indexi index:IndexPath){
-        if let url = URL(string: urlString){
-            let task = URLSession.shared.dataTask(with: url){(data,response,error) in
-                if let error = error{
-                    print("[DATA TASK ERROR: \(error.localizedDescription)]")
-                    return
-                }
-                
-                guard let httpResponse = response as? HTTPURLResponse,(200...299).contains(httpResponse.statusCode)else{
-                    print("[SERVER ERROR]")
-                    return
-                }
-                guard let data = data else{
-                    print("No data is received")
-                    return
-                }
-                
-                do{
-                    let image = UIImage(data: data)
-                    DispatchQueue.main.sync {
-                        let cell = self.contriTable.cellForRow(at: index) as! TableViewCellContri
-                        cell.contriImage.image = image
-                    }
-                    
-                }
-            }
-            task.resume()
-        }
-    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
@@ -78,6 +50,13 @@ class ContributorsViewController:  UIViewController{
         {
             destinationVC.usernamePassedBylogin = cell.contriName.text
         }
+    }
+    
+    @objc func homeButtonTapped() {
+        guard let initialVC = ProfileViewController.initialInstance else {
+            return
+        }
+            self.navigationController?.popToViewController(initialVC, animated: true)
     }
 }
 
@@ -89,20 +68,7 @@ extension ContributorsViewController:UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! TableViewCellContri
-        cell.contriName.text = userReposContri[indexPath.row].login
-        if let avatar_url = userReposContri[indexPath.row].avatar_url {
-            let instance = Download()
-            instance.downloadImage(from: avatar_url,indexi:indexPath){
-                data in
-                let image = UIImage(data: data!)
-                DispatchQueue.main.sync {
-                    let cell = self.contriTable.cellForRow(at: indexPath) as! TableViewCellContri
-                    cell.contriImage.image = image
-                    
-                }
-            }
-        }
-        cell.contriNo.text = "Contributions:\(userReposContri[indexPath.row].contributions!)"
+        cell.contribution = userReposContri[indexPath.row]
         return cell
     }
 }
@@ -111,5 +77,12 @@ extension ContributorsViewController: UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = contriTable.cellForRow(at: indexPath)
         performSegue(withIdentifier: "contritoprofile", sender: cell)
+    }
+}
+
+extension ContributorsViewController{
+    func updateUIForContri(_ result: [GitHubRepoContri]){
+        self.userReposContri = result
+        self.contriTable.reloadData()
     }
 }

@@ -12,15 +12,48 @@ class ProfileViewController: UIViewController{
     @IBOutlet var bio: UILabel!
     @IBOutlet var hashtag: UILabel!
     
+    @IBAction func Follow(_ sender: Any) {
+        let alertController = UIAlertController(title: "FOLLOW", message: "This feature is not available yet", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    //making the initial instaces
+    static var initialInstance: ProfileViewController?
+    let activityIndicator = UIActivityIndicatorView(style: .large)
+    
     // MARK: - Declarations
     var usernamePassedBylogin :String!
     public var userRepos: [GitHubRepo] = []
     var userData: [Int] = []
-    var names: [String] = ["Followers","Following","Repos"]
+    var names: [String] = ["Followers","Following","Repos","Stars"]
+    var totalStars:Int = 0
     
     //MARK: - Viewdidload
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        activityIndicator.center = view.center
+        activityIndicator.hidesWhenStopped = true
+        
+        view.addSubview(activityIndicator)
+        
+        let backgroundView = UIView()
+        backgroundView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+        backgroundView.backgroundColor = UIColor(white: 0, alpha: 0.5) // semi-transparent black
+        backgroundView.center = self.view.center
+        
+        if ProfileViewController.initialInstance != nil {
+            let homeButton = UIBarButtonItem(image: UIImage(named: "home1.png"), style: .plain, target: self, action: #selector(homeButtonTapped))
+            self.navigationItem.rightBarButtonItem = homeButton
+        }
+        if ProfileViewController.initialInstance == nil {
+            ProfileViewController.initialInstance = self
+        }
+        
+        //setting the title
+        self.title = usernamePassedBylogin
         
         // MARK: - Adding Header View for Profile
         let headerView = HeaderView
@@ -36,74 +69,44 @@ class ProfileViewController: UIViewController{
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        //MARK - Calling Functions
-        fetchGitHubUserName(username : usernamePassedBylogin)
-        fetchGitUserRepos(username : usernamePassedBylogin)
+        //MARK - Calling Functions and chaining is done to insure the seq
+        
+        activityIndicator.startAnimating()
+        view.addSubview(backgroundView)
+        
+        ApiHandling.fetchUser(username: usernamePassedBylogin){
+            (result,error) in
+            DispatchQueue.main.async {
+                if error == "noData" || result == nil{
+                    let alert = UIAlertController(title: "Error", message: "Check internet Connection", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
+                        action in
+                        self.navigationController?.popToRootViewController(animated: true)
+                    }))
+                    self.present(alert,animated: true,completion: nil)
+                }
+                else{
+                    self.updateUIForUser(result!)
+                }
+            }
+        
+        ApiHandling.fetchUserRepo(username: self.usernamePassedBylogin){
+            (result,error) in
+            DispatchQueue.main.async {
+                if error == "noData" || result == nil{
+                    //nothing is needed
+                } else {
+                    self.updateUIForRepos(result!)
+                }
+                self.activityIndicator.stopAnimating()
+                backgroundView.removeFromSuperview()
+            }
+        }
+    }
+        
         
         //MARK: - Segment controller
         segmentController.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
-    }
-    
-    //MARK: Fetching funcs
-    //MARK: UserData
-    func fetchGitHubUserName(username : String){
-        let base_url = "https://api.github.com/"
-        let additional_url_of_user = "users/\(username)"
-        let final_url_string = base_url + additional_url_of_user
-        
-        let insatanceOfApiManager = ApiManager()
-        insatanceOfApiManager.hitApi(final_url_string){
-            (data,error) in
-            do {
-                let decoder = JSONDecoder()
-                let userData = try decoder.decode(GitHubUser.self, from: data!)
-                DispatchQueue.main.async {
-                    self.username.text = "\(userData.name ?? "N/A")"
-                    self.hashtag.text = "@\(userData.login)"
-                    self.bio.text = "Bio:\(userData.bio ?? "N/A")"
-                    if let avatar_url = userData.avatar_url {
-                        let instance = Download()
-                        instance.downloadImage(from: avatar_url){
-                            data in
-                            let image = UIImage(data: data!)
-                            DispatchQueue.main.async {
-                                self.profileImage.image = image
-                            }
-                        }
-                    }
-                    self.userData.append(userData.followers ?? 0)
-                    self.userData.append(userData.following ?? 0)
-                    self.userData.append(userData.public_repos ?? 0)
-                    self.collectionView.reloadData()
-                }
-            } catch {
-                print("[JSON DECODING ERROR: \(error.localizedDescription)]")
-            }
-        }
-    }
-    
-    //MARK: Repos
-    
-    func fetchGitUserRepos(username :String ){
-        let base_url = "https://api.github.com/"
-        let additional_user_of_user = "users/\(username)/repos"
-        let final_url_string = base_url + additional_user_of_user
-        let instance = ApiManager()
-        instance.hitApi(final_url_string){
-            (data,error) in
-            do {
-                let decoder = JSONDecoder()
-                let userRepos = try decoder.decode([GitHubRepo].self, from: data!)
-                DispatchQueue.main.async {
-                    let reposString = userRepos.map { "\($0.name): \($0.description ?? "No description")" }.joined(separator: "\n")
-                    self.userRepos = userRepos
-                    self.repoTable.reloadData()
-                    print("Repos:\n\(reposString)")
-                }
-            } catch {
-                print("[JSON DECODING ERROR: \(error.localizedDescription)]")
-            }
-        }
         
     }
     
@@ -126,8 +129,16 @@ class ProfileViewController: UIViewController{
            let cell = sender as? CustomCellForRepoTableTableViewCell
         {
             destinationVC.usernamePassedByContri = usernamePassedBylogin
-            destinationVC.repoNamePassedByContri = cell.reponame.text
+            let truncatedRepoName = String(cell.reponame.text!.dropLast(2))
+            destinationVC.repoNamePassedByContri = truncatedRepoName
         }
+    }
+    //Home button Logic
+    @objc func homeButtonTapped() {
+        guard let initialVC = ProfileViewController.initialInstance else {
+            return
+        }
+            self.navigationController?.popToViewController(initialVC, animated: true)
     }
 }
 
@@ -135,7 +146,7 @@ extension ProfileViewController:UICollectionViewDelegateFlowLayout{
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let cellwidth = collectionView.bounds.width
-        return CGSize(width: cellwidth/3, height: 100)
+        return CGSize(width: cellwidth/4, height: 100)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -152,12 +163,12 @@ extension ProfileViewController:UICollectionViewDelegateFlowLayout{
 extension ProfileViewController: UICollectionViewDataSource{
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return 4
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "segmentcell", for: indexPath) as! CollectionViewCell
-        if indexPath.item < self.userData.count{//this is needed because this array is getting data from api and that is async
+        if indexPath.item < self.userData.count , userData.count == 4{//this is needed because this array is getting data from api and that is async
             cell.Value.text = "\(self.userData[indexPath.item])"
         }
         cell.variable.text = "\(self.names[indexPath.item])"
@@ -183,20 +194,8 @@ extension ProfileViewController:UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCellForRepoTableTableViewCell
-        cell.reponame.text = userRepos[indexPath.row].name
-        cell.repoDescription.text = userRepos[indexPath.row].description ?? "No description"
-        cell.repoData = userRepos[indexPath.row]
-        if let avatar_url = userRepos[indexPath.row].owner.avatar_url {
-            let instance = Download()
-            instance.downloadImage(from: avatar_url,indexi:indexPath){
-                data in
-                let image = UIImage(data: data!)
-                DispatchQueue.main.sync {
-                let cell = self.repoTable.cellForRow(at: indexPath) as! CustomCellForRepoTableTableViewCell
-                cell.repoImage.image = image
-                }
-            }
-        }
+        let repoData = userRepos[indexPath.row]
+        cell.configure(with: repoData)
         return cell
     }
     
@@ -220,10 +219,42 @@ extension ProfileViewController:UITableViewDelegate{
         let cell = repoTable.cellForRow(at: indexPath)
             performSegue(withIdentifier: "profiletocontri", sender: cell)
         }
-    
 }
 
 extension ProfileViewController:UICollectionViewDelegate{
     //Nothing till now
+}
+
+extension ProfileViewController{
+    func updateUIForRepos(_ result:[GitHubRepo]){
+        self.userRepos = result
+        for repo in self.userRepos {
+            self.totalStars += repo.stargazersCount ?? 0
+        }
+        self.userData.append(self.totalStars)
+        self.repoTable.reloadData()
+        self.collectionView.reloadData()
+    }
+    
+    func updateUIForUser(_ result:GitHubUser){
+        self.username.text = "\(result.name ?? "N/A")"
+        self.hashtag.text = "@\(result.login )"
+        self.bio.text = "Bio:\(result.bio ?? "N/A")"
+        if let avatar_url = result.avatarURL {
+            let instance = Download()
+            instance.downloadImage(from: avatar_url){
+                data in
+                let image = UIImage(data: data!)
+                DispatchQueue.main.async {
+                    self.profileImage.image = image
+                }
+            }
+        }
+        self.userData.append(result.followers ?? 0)
+        self.userData.append(result.following ?? 0)
+        self.userData.append(result.publicRepos ?? 0)
+        self.collectionView.reloadData()
+    }
+    
 }
 
