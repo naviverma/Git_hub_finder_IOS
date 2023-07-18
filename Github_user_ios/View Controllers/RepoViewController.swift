@@ -53,46 +53,56 @@ class RepoViewController: UIViewController {
                     ApiHandling.fetchCode(username: self.usernamePassed, repoName: self.reponamePassed,additional: self.additionalPassed){
                         (data,error) in
                         if let base64String = data?.content?.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "\n", with: "")
-                            {
+                        {
                             guard let dataDec = Data(base64Encoded : base64String) else {
                                 print("Failed to decode base64String to Data")
                                 return
                             }
-                          
+                            
                             if self.additionalPassed.hasSuffix(".mp4") || self.additionalPassed.hasSuffix(".mov") {
-                                let instance = Download()
-                                instance.downloadImage(from: (data?.downloadURL)!){
-                                    data in
-                                    self.downloadedVideo = data!
-                                    var tempVideoUrl: URL?
-                                    do {
-                                        print(self.downloadedVideo)
-                                        let directory = FileManager.default.temporaryDirectory
-                                        tempVideoUrl = directory.appendingPathComponent(UUID().uuidString + ".mp4")
-                                        try self.downloadedVideo.write(to: tempVideoUrl!)
-
-                                    } catch {
-                                        print("couldn't write to file: \(error)")
-                                        return
-                                    }
-                                    if let videoUrl = tempVideoUrl, FileManager.default.fileExists(atPath: videoUrl.path) {
-                                        print("File exists at path: \(videoUrl.path)")
-                                        self.player = AVPlayer(url: videoUrl)
-                                        DispatchQueue.main.async {
-                                            let playerViewController = AVPlayerViewController()
-                                            playerViewController.player = self.player
-                                            self.present(playerViewController,animated: true) {
-                                                print("Player View Controller Presented")
-                                                self.player.play()
-                                                print("Play called")
-                                                self.activity.stopAnimating()
-                                                self.navigationController?.popViewController(animated: true)
+                                let alert = UIAlertController(title: "Select", message: "Download might take time", preferredStyle: .actionSheet)
+                                alert.addAction(UIAlertAction(title: "Download", style: .default,handler:{
+                                    action in
+                                    let instance = Download()
+                                    instance.downloadImage(from: (data?.downloadURL)!){
+                                        data in
+                                        self.downloadedVideo = data!
+                                        var tempVideoUrl: URL?
+                                        do {
+                                            print(self.downloadedVideo)
+                                            let directory = FileManager.default.temporaryDirectory
+                                            tempVideoUrl = directory.appendingPathComponent(UUID().uuidString + ".mp4")
+                                            try self.downloadedVideo.write(to: tempVideoUrl!)
+                                            
+                                        } catch {
+                                            print("couldn't write to file: \(error)")
+                                            return
                                         }
+                                        if let videoUrl = tempVideoUrl, FileManager.default.fileExists(atPath: videoUrl.path) {
+                                            print("File exists at path: \(videoUrl.path)")
+                                            self.player = AVPlayer(url: videoUrl)
+                                            DispatchQueue.main.async {
+                                                let playerViewController = AVPlayerViewController()
+                                                playerViewController.player = self.player
+                                                self.present(playerViewController,animated: true) {
+                                                    print("Player View Controller Presented")
+                                                    self.player.play()
+                                                    print("Play called")
+                                                    self.activity.stopAnimating()
+                                                    self.navigationController?.popViewController(animated: true)
+                                                }
+                                            }
                                         }
-                                    } else {
-                                        print("File does not exist at path: \(tempVideoUrl?.path ?? "No path available")")
+                                        else {
+                                            print("File does not exist at path")
+                                        }
                                     }
-                                }
+                                }))
+                                alert.addAction(UIAlertAction(title: "Leave", style: .default,handler: {
+                                    action in
+                                    self.navigationController?.popViewController(animated: true)
+                                }))
+                                self.present(alert,animated: true)
                             }
                             else{
                             if let image = UIImage(data: dataDec) {
