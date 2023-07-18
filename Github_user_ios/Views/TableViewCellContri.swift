@@ -22,6 +22,12 @@ class TableViewCellContri: UITableViewCell {
                 configureCell()
             }
         }
+    
+    var files: GitRepoFiles?{
+        didSet{
+            configureCellForFiles()
+        }
+    }
 
     func configureCell() {
         guard let contribution = self.contribution else { return }
@@ -39,4 +45,12 @@ class TableViewCellContri: UITableViewCell {
             }
         }
     }
+    
+    func configureCellForFiles() {
+        guard let files = self.files else { return }
+        self.contriName.text = files.name
+        self.contriNo.text = "Path:\(files.path ?? "N/A")"
+        self.contriImage.image = UIImage(named: "github.png")
+            }
 }
+

@@ -17,6 +17,11 @@
 		5D4973B72A5BEF32004FDB43 /* clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D4973B62A5BEF32004FDB43 /* clock.png */; };
 		5D4973C02A5D59BE004FDB43 /* home.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D4973BF2A5D59BE004FDB43 /* home.png */; };
 		5D4973C62A5DECF8004FDB43 /* APIHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4973C52A5DECF8004FDB43 /* APIHandling.swift */; };
+		5D4973D12A614E1B004FDB43 /* CashedUserData.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 5D4973CD2A606A54004FDB43 /* CashedUserData.geojson */; };
+		5D4973D22A615635004FDB43 /* CashedContributorData.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 5D4973CF2A606A7B004FDB43 /* CashedContributorData.geojson */; };
+		5D4973D32A615665004FDB43 /* CashedRepoData.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 5D4973CE2A606A66004FDB43 /* CashedRepoData.geojson */; };
+		5D4973D52A616689004FDB43 /* —Pngtree—user cartoon avatar pattern flat_4492883.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D4973D42A616689004FDB43 /* —Pngtree—user cartoon avatar pattern flat_4492883.png */; };
+		5D4973D72A626E06004FDB43 /* RepoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4973D62A626E05004FDB43 /* RepoViewController.swift */; };
 		5D4FF5492A56A8B3004537B5 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4FF5472A56A8B3004537B5 /* CollectionViewCell.swift */; };
 		5D4FF54A2A56A8B3004537B5 /* CollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D4FF5482A56A8B3004537B5 /* CollectionViewCell.xib */; };
 		5D5B98322A53E85D00F56EE4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5B98312A53E85D00F56EE4 /* AppDelegate.swift */; };
@@ -54,6 +59,11 @@
 		5D4973B62A5BEF32004FDB43 /* clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clock.png; sourceTree = "<group>"; };
 		5D4973BF2A5D59BE004FDB43 /* home.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = home.png; sourceTree = "<group>"; };
 		5D4973C52A5DECF8004FDB43 /* APIHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHandling.swift; sourceTree = "<group>"; };
+		5D4973CD2A606A54004FDB43 /* CashedUserData.geojson */ = {isa = PBXFileReference; lastKnownFileType = text; name = CashedUserData.geojson; path = Github_user_ios/CashedData/CashedUserData.geojson; sourceTree = SOURCE_ROOT; };
+		5D4973CE2A606A66004FDB43 /* CashedRepoData.geojson */ = {isa = PBXFileReference; lastKnownFileType = text; path = CashedRepoData.geojson; sourceTree = "<group>"; };
+		5D4973CF2A606A7B004FDB43 /* CashedContributorData.geojson */ = {isa = PBXFileReference; lastKnownFileType = text; path = CashedContributorData.geojson; sourceTree = "<group>"; };
+		5D4973D42A616689004FDB43 /* —Pngtree—user cartoon avatar pattern flat_4492883.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "—Pngtree—user cartoon avatar pattern flat_4492883.png"; sourceTree = "<group>"; };
+		5D4973D62A626E05004FDB43 /* RepoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoViewController.swift; sourceTree = "<group>"; };
 		5D4FF5472A56A8B3004537B5 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		5D4FF5482A56A8B3004537B5 /* CollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewCell.xib; sourceTree = "<group>"; };
 		5D5B982E2A53E85D00F56EE4 /* Github_user_ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Github_user_ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,6 +111,17 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		5D4973CB2A6069FA004FDB43 /* CashedData */ = {
+			isa = PBXGroup;
+			children = (
+				5D4973D42A616689004FDB43 /* —Pngtree—user cartoon avatar pattern flat_4492883.png */,
+				5D4973CD2A606A54004FDB43 /* CashedUserData.geojson */,
+				5D4973CF2A606A7B004FDB43 /* CashedContributorData.geojson */,
+				5D4973CE2A606A66004FDB43 /* CashedRepoData.geojson */,
+			);
+			path = CashedData;
+			sourceTree = "<group>";
+		};
 		5D5B98252A53E85D00F56EE4 = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +141,7 @@
 		5D5B98302A53E85D00F56EE4 /* Github_user_ios */ = {
 			isa = PBXGroup;
 			children = (
+				5D4973CB2A6069FA004FDB43 /* CashedData */,
 				5D4973B32A5A9AE6004FDB43 /* Utilities */,
 				5D797F1A2A55565200043E94 /* Networking */,
 				5D797F112A554E8C00043E94 /* Model */,
@@ -137,6 +159,7 @@
 				5D5B984A2A53EA7D00F56EE4 /* ContributorsViewController.swift */,
 				5D5B984C2A53EA9000F56EE4 /* ProfileViewController.swift */,
 				5D797F1F2A55B92300043E94 /* LoginViewController.swift */,
+				5D4973D62A626E05004FDB43 /* RepoViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -154,9 +177,9 @@
 				5D797F232A56879300043E94 /* LoginHeaderView.swift */,
 				5D017A6B2A5717080043F05D /* CustomCellForRepoTableTableViewCell.swift */,
 				5D017A6C2A5717080043F05D /* CustomCellForRepoTableTableViewCell.xib */,
-				5D5B983C2A53E85F00F56EE4 /* LaunchScreen.storyboard */,
 				5D7260A32A57538B00A44A43 /* TableViewCellContri.swift */,
 				5D7260A42A57538B00A44A43 /* TableViewCellContri.xib */,
+				5D5B983C2A53E85F00F56EE4 /* LaunchScreen.storyboard */,
 				5D5B98372A53E85D00F56EE4 /* Main.storyboard */,
 			);
 			path = Views;
@@ -258,10 +281,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D4973B22A5A7628004FDB43 /* github.png in Resources */,
+				5D4973D22A615635004FDB43 /* CashedContributorData.geojson in Resources */,
 				5D4FF54A2A56A8B3004537B5 /* CollectionViewCell.xib in Resources */,
+				5D4973D52A616689004FDB43 /* —Pngtree—user cartoon avatar pattern flat_4492883.png in Resources */,
 				5D4973C02A5D59BE004FDB43 /* home.png in Resources */,
+				5D4973D12A614E1B004FDB43 /* CashedUserData.geojson in Resources */,
 				5D4973B72A5BEF32004FDB43 /* clock.png in Resources */,
 				5DB31FFF2A5A6D8B00740442 /* code.png in Resources */,
+				5D4973D32A615665004FDB43 /* CashedRepoData.geojson in Resources */,
 				5DC1A5072A5867F1004C5678 /* image1.png in Resources */,
 				5DC1A50E2A586CB6004C5678 /* image2.png in Resources */,
 				5DC1A5042A5837C4004C5678 /* CollectionViewCellRepoCollectionViewCell.xib in Resources */,
@@ -286,6 +313,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D017A6A2A57169F0043F05D /* Models.swift in Sources */,
+				5D4973D72A626E06004FDB43 /* RepoViewController.swift in Sources */,
 				5D797F202A55B92300043E94 /* LoginViewController.swift in Sources */,
 				5D797F242A56879300043E94 /* LoginHeaderView.swift in Sources */,
 				5D017A6D2A5717080043F05D /* CustomCellForRepoTableTableViewCell.swift in Sources */,

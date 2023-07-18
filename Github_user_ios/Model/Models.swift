@@ -42,6 +42,7 @@ struct GitHubUser: Codable {
 }
 
 struct GitHubRepo: Codable {
+    
     let name: String
     let description: String?
     let language: String?
@@ -71,3 +72,11 @@ struct Owner: Codable {
     }
 }
 
+struct GitRepoFiles : Codable{
+    let name:String?
+    let path:String?
+}
+
+struct GitCode: Codable{
+    let content:String?
+}

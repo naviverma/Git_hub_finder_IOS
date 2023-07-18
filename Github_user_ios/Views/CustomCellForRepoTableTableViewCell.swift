@@ -15,6 +15,8 @@ class CustomCellForRepoTableTableViewCell: UITableViewCell,UICollectionViewDeleg
     @IBOutlet var repoDescription: UILabel!
     @IBOutlet var reponame: UILabel!
     
+    static var downloadLabel:Bool = true
+    
     
     var repoData: GitHubRepo? {
             didSet {
@@ -43,13 +45,14 @@ class CustomCellForRepoTableTableViewCell: UITableViewCell,UICollectionViewDeleg
         self.repoDescription.text = repoData.description ?? "No description"
         if let avatarUrl = repoData.owner.avatarURL{
             let instance = Download()
-            
-            instance.downloadImage(from: avatarUrl){
-                data in
-                let image = UIImage(data: data!)
-                
-                DispatchQueue.main.sync{
-                    self.repoImage.image = image
+            if CustomCellForRepoTableTableViewCell.downloadLabel == true{
+                instance.downloadImage(from: avatarUrl){
+                    data in
+                    let image = UIImage(data: data!)
+                    
+                    DispatchQueue.main.sync{
+                        self.repoImage.image = image
+                    }
                 }
             }
         }
@@ -107,6 +110,7 @@ extension CustomCellForRepoTableTableViewCell:UICollectionViewDataSource{
         let formatter = ISO8601DateFormatter()//becasue date is in ISO8601Date format
         
         if let date = formatter.date(from: dateString){
+            
             let currentDate = Date()
             let calandar = Calendar.current
             
@@ -149,9 +153,9 @@ extension CustomCellForRepoTableTableViewCell:UICollectionViewDataSource{
             }
             if let secs = components.second,secs > 0 {
                 if secs > 1 {
-                    return "\(secs) mins ago"
+                    return "\(secs) secs ago"
                 }
-                return "\(secs) min ago"
+                return "\(secs) sec ago"
             }
             
         }

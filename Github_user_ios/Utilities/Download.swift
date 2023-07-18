@@ -12,7 +12,7 @@ class Download{
     func downloadImage(from urlString: String,completion:@escaping(Data?)->Void){
                 let instance = ApiManager()
         instance.hitApi(urlString){
-            (data,error) in
+            (data,error,situation) in
                 do{
                     completion(data!)
                     }
@@ -21,7 +21,7 @@ class Download{
     func downloadImage(from urlString: String,indexi index:IndexPath,completion:@escaping(Data?)->Void){
         let instance = ApiManager()
         instance.hitApi(urlString){
-            (data,error) in
+            (data,error,situation) in
                 do{
                     completion(data!)
                     }

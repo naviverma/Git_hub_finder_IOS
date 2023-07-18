@@ -12,6 +12,10 @@ class ProfileViewController: UIViewController{
     @IBOutlet var bio: UILabel!
     @IBOutlet var hashtag: UILabel!
     
+    var updateTimer:Timer?
+    var debugger:Int = 0
+    var flag:Bool = true
+    
     @IBAction func Follow(_ sender: Any) {
         let alertController = UIAlertController(title: "FOLLOW", message: "This feature is not available yet", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -26,7 +30,7 @@ class ProfileViewController: UIViewController{
     // MARK: - Declarations
     var usernamePassedBylogin :String!
     public var userRepos: [GitHubRepo] = []
-    var userData: [Int] = []
+    var userData: [Int] = [0,0,0,0]
     var names: [String] = ["Followers","Following","Repos","Stars"]
     var totalStars:Int = 0
     
@@ -77,26 +81,48 @@ class ProfileViewController: UIViewController{
         ApiHandling.fetchUser(username: usernamePassedBylogin){
             (result,error) in
             DispatchQueue.main.async {
-                if error == "noData" || result == nil{
-                    let alert = UIAlertController(title: "Error", message: "Check internet Connection", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
-                        action in
-                        self.navigationController?.popToRootViewController(animated: true)
-                    }))
-                    self.present(alert,animated: true,completion: nil)
-                }
-                else{
-                    self.updateUIForUser(result!)
+                if error == "offline" || result == nil {
+                    if let bundleURL = Bundle.main.url(forResource: "CashedUserData", withExtension: "geojson") {
+                        do {
+                            let data = try Data(contentsOf: bundleURL)
+                            let userData = try JSONDecoder().decode(GitHubUser.self, from: data)
+                            self.updateUIForUser(userData,false)
+                        } catch {
+                            print("Failed to load or decode data: \(error)")
+                        }
+                        let alert = UIAlertController(title: "Error", message: "Check your internet.\nThis cashed data.", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler:nil))
+                        alert.addAction(UIAlertAction(title: "Leave", style: .default,handler:{
+                            action in
+                            self.navigationController?.popToRootViewController(animated: true)
+                        }))
+                        self.present(alert,animated: true,completion: nil)
+                    } else {
+                        print("Could not find the file")
+                    }
+                } else {
+                    self.updateUIForUser(result!,true)
                 }
             }
         
         ApiHandling.fetchUserRepo(username: self.usernamePassedBylogin){
             (result,error) in
             DispatchQueue.main.async {
-                if error == "noData" || result == nil{
-                    //nothing is needed
+                if error == "offline" || result == nil {
+                    if let bundleURL = Bundle.main.url(forResource: "CashedContributorData", withExtension: "geojson") {
+                        do {
+                            let data = try Data(contentsOf: bundleURL)
+                            let userData = try JSONDecoder().decode([GitHubRepo].self, from: data)
+                            self.updateUIForRepos (userData,false)
+                        } catch {
+                            print("Failed to load or decode data: \(error)")
+                        }
+                    } else {
+                        print("Could not find the file")
+                    }
+
                 } else {
-                    self.updateUIForRepos(result!)
+                    self.updateUIForRepos(result!,true)
                 }
                 self.activityIndicator.stopAnimating()
                 backgroundView.removeFromSuperview()
@@ -110,13 +136,59 @@ class ProfileViewController: UIViewController{
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+            startUpdateTimer()
+        }
+
+        override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            updateTimer?.invalidate()
+        }
+
+        func startUpdateTimer() {            updateTimer?.invalidate()
+
+            updateTimer = Timer.scheduledTimer(withTimeInterval: 120.0, repeats: true) { [weak self] _ in
+                self?.fetchData()
+            }
+        }
+
+        func fetchData() {
+            ApiHandling.fetchUser(username: usernamePassedBylogin) {
+                (result, error) in
+                DispatchQueue.main.async {
+                    if error == "noData" || result == nil {
+                        if let bundleURL = Bundle.main.url(forResource: "CashedUserData", withExtension:".geojson"),
+                           let data = try? Data(contentsOf: bundleURL){
+                            let decoder = JSONDecoder()
+                            let userData = try? decoder.decode(GitHubUser.self, from: data)
+                            self.updateUIForUser(userData!,false)
+                        }
+                    } else {
+                        self.updateUIForUser(result!,true)
+                    }
+                }
+            }
+
+            ApiHandling.fetchUserRepo(username: self.usernamePassedBylogin) {
+                (result, error) in
+                DispatchQueue.main.async {
+                    if error == "noData" || result == nil {
+                    } else {
+                        self.updateUIForRepos(result!,true)
+                    }
+                }
+            }
+        }
+
+    
     //MARK: Function for segment Controller
     
     @objc func segmentChanged(_ sender: UISegmentedControl){
         repoTable.reloadData()
     }
     
-    //MARK: overriding viewcontroller funcs
+    //MARK: overriding viewcontroller func
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         repoTable.reloadData()
@@ -133,6 +205,7 @@ class ProfileViewController: UIViewController{
             destinationVC.repoNamePassedByContri = truncatedRepoName
         }
     }
+    
     //Home button Logic
     @objc func homeButtonTapped() {
         guard let initialVC = ProfileViewController.initialInstance else {
@@ -167,12 +240,12 @@ extension ProfileViewController: UICollectionViewDataSource{
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "segmentcell", for: indexPath) as! CollectionViewCell
-        if indexPath.item < self.userData.count , userData.count == 4{//this is needed because this array is getting data from api and that is async
-            cell.Value.text = "\(self.userData[indexPath.item])"
-        }
-        cell.variable.text = "\(self.names[indexPath.item])"
-        return cell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "segmentcell", for: indexPath) as! CollectionViewCell
+            if indexPath.item < self.userData.count , userData.count == 4{//this is needed because this array is getting data from api and that is async
+                cell.Value.text = "\(self.userData[indexPath.item])"
+            }
+            cell.variable.text = "\(self.names[indexPath.item])"
+            return cell
     }
     
 }
@@ -226,35 +299,45 @@ extension ProfileViewController:UICollectionViewDelegate{
 }
 
 extension ProfileViewController{
-    func updateUIForRepos(_ result:[GitHubRepo]){
-        self.userRepos = result
-        for repo in self.userRepos {
-            self.totalStars += repo.stargazersCount ?? 0
-        }
-        self.userData.append(self.totalStars)
-        self.repoTable.reloadData()
-        self.collectionView.reloadData()
+    
+    func updateUIForRepos(_ result:[GitHubRepo],_ flagForRepos:Bool){
+            var localStars = 0
+            if flagForRepos == false{
+            CustomCellForRepoTableTableViewCell.downloadLabel = false
+            }
+            self.userRepos = result
+            for repo in self.userRepos {
+                localStars += repo.stargazersCount ?? 0
+            }
+            self.totalStars = localStars
+            self.userData[3] = (self.totalStars)
+            self.repoTable.reloadData()
+            self.collectionView.reloadData()
     }
     
-    func updateUIForUser(_ result:GitHubUser){
+    func updateUIForUser(_ result:GitHubUser,_ flagForImage:Bool){
+        
+        self.userData = [0,0,0,totalStars]
         self.username.text = "\(result.name ?? "N/A")"
         self.hashtag.text = "@\(result.login )"
         self.bio.text = "Bio:\(result.bio ?? "N/A")"
-        if let avatar_url = result.avatarURL {
-            let instance = Download()
-            instance.downloadImage(from: avatar_url){
-                data in
-                let image = UIImage(data: data!)
-                DispatchQueue.main.async {
-                    self.profileImage.image = image
+        
+        if flagForImage == true{
+            if let avatar_url = result.avatarURL {
+                let instance = Download()
+                instance.downloadImage(from: avatar_url){
+                    data in
+                    let image = UIImage(data: data!)
+                    DispatchQueue.main.async {
+                        self.profileImage.image = image
+                    }
                 }
             }
         }
-        self.userData.append(result.followers ?? 0)
-        self.userData.append(result.following ?? 0)
-        self.userData.append(result.publicRepos ?? 0)
-        self.collectionView.reloadData()
+            self.userData[0] = result.followers ?? 0
+            self.userData[1] = result.following ?? 0
+            self.userData[2] = result.publicRepos ?? 0
+            self.collectionView.reloadData()
     }
-    
 }
 
