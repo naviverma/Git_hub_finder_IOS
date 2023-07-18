@@ -22,6 +22,8 @@ class RepoViewController: UIViewController {
     var reponamePassed:String!
     var additionalPassed:String!
     var activity = UIActivityIndicatorView(style: .large)
+    var player:AVPlayer!
+    var downloadedVideo = Data()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,24 +58,37 @@ class RepoViewController: UIViewController {
                                 print("Failed to decode base64String to Data")
                                 return
                             }
-                            if self.additionalPassed.hasSuffix(".mp4"){
-                                if let decodedString = Data(base64Encoded: base64String){
-                                    var tempVideoUrl:URL?
-                                    do{
+                          
+                            if self.additionalPassed.hasSuffix(".mp4") || self.additionalPassed.hasSuffix(".mov") {
+                                let instance = Download()
+                                instance.downloadImage(from: (data?.downloadURL)!){
+                                    data in
+                                    self.downloadedVideo = data!
+                                    var tempVideoUrl: URL?
+                                    do {
+                                        print(self.downloadedVideo)
                                         let directory = FileManager.default.temporaryDirectory
                                         tempVideoUrl = directory.appendingPathComponent(UUID().uuidString + ".mp4")
-                                        try decodedString.write(to: tempVideoUrl!)
+                                        try self.downloadedVideo.write(to: tempVideoUrl!)
+
+                                    } catch {
+                                        print("couldn't write to file: \(error)")
+                                        return
                                     }
-                                    catch{
-                                        print("couldn't write to file")
-                                    }
-                                    if let videoUrl = tempVideoUrl,FileManager.default.fileExists(atPath: videoUrl.path){
-                                        let player = AVPlayer(url: videoUrl)
-                                        let playerViewController = AVPlayerViewController()
-                                        playerViewController.player = player
-                                        self.present(playerViewController,animated: true){
-                                            player.play()
+                                    if let videoUrl = tempVideoUrl, FileManager.default.fileExists(atPath: videoUrl.path) {
+                                        print("File exists at path: \(videoUrl.path)")
+                                        self.player = AVPlayer(url: videoUrl)
+                                        DispatchQueue.main.async {
+                                            let playerViewController = AVPlayerViewController()
+                                            playerViewController.player = self.player
+                                            self.present(playerViewController,animated: true) {
+                                                print("Player View Controller Presented")
+                                                self.player.play()
+                                                print("Play called")
                                         }
+                                        }
+                                    } else {
+                                        print("File does not exist at path: \(tempVideoUrl?.path ?? "No path available")")
                                     }
                                 }
                             }

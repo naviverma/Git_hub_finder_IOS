@@ -79,4 +79,10 @@ struct GitRepoFiles : Codable{
 
 struct GitCode: Codable{
     let content:String?
+    let downloadURL:String?
+    
+    enum CodingKeys:String, CodingKey {
+        case content
+        case downloadURL = "download_url"
+    }
 }
