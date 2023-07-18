@@ -85,6 +85,8 @@ class RepoViewController: UIViewController {
                                                 print("Player View Controller Presented")
                                                 self.player.play()
                                                 print("Play called")
+                                                self.activity.stopAnimating()
+                                                self.navigationController?.popViewController(animated: true)
                                         }
                                         }
                                     } else {
