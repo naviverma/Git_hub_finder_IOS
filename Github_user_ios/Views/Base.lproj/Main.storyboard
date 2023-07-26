@@ -10,10 +10,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Login View Controller-->
+        <!--Mock Login View Controller-->
         <scene sceneID="b1q-wB-m0c">
             <objects>
-                <viewController id="dWo-L8-epf" customClass="LoginViewController" customModule="Github_user_ios" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="dWo-L8-epf" customClass="MockLoginViewController" customModule="Github_user_iosTests" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1Y1-kf-5lD">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -139,16 +139,16 @@
             </objects>
             <point key="canvasLocation" x="1875.5725190839694" y="-101.40845070422536"/>
         </scene>
-        <!--Profile View Controller-->
+        <!--Mock Profile View Controller-->
         <scene sceneID="5HS-yB-PD7">
             <objects>
-                <viewController storyboardIdentifier="ProfileViewController" id="Lgr-1v-OPR" customClass="ProfileViewController" customModule="Github_user_ios" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProfileViewController" id="Lgr-1v-OPR" customClass="MockProfileViewController" customModule="Github_user_iosTests" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="o0P-c8-zSu">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="WAF-mW-dpO">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                                <rect key="frame" x="0.0" y="103" width="393" height="666"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CustomCell" id="3jm-m3-DdX" customClass="CustomCellForRepoTableTableViewCell" customModule="Github_user_ios" customModuleProvider="target">
@@ -304,16 +304,16 @@
             </objects>
             <point key="canvasLocation" x="2559.5419847328244" y="-101.40845070422536"/>
         </scene>
-        <!--Contributors View Controller-->
+        <!--Mock Contributors View Controller-->
         <scene sceneID="U4B-c7-Yna">
             <objects>
-                <viewController id="4NS-Zb-nAy" customClass="ContributorsViewController" customModule="Github_user_ios" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ContributorsViewController" id="4NS-Zb-nAy" customClass="MockContributorsViewController" customModule="Github_user_iosTests" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FoK-pD-DrN">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="z4f-hn-A9W">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                                <rect key="frame" x="0.0" y="103" width="393" height="666"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CustomCell" id="Bcv-rF-t1i">
@@ -395,7 +395,7 @@
                     </constraints>
                 </view>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="UKG-sw-eKc">
-                    <rect key="frame" x="0.0" y="0.0" width="393" height="33"/>
+                    <rect key="frame" x="0.0" y="-1" width="393" height="33"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" systemColor="systemGreenColor"/>
                     <segments>
@@ -441,16 +441,16 @@
             </objects>
             <point key="canvasLocation" x="3276" y="-101"/>
         </scene>
-        <!--Repo View Controller-->
+        <!--Mock Repo View Controller-->
         <scene sceneID="aC7-eM-CKR">
             <objects>
-                <viewController id="n0z-vU-xUB" customClass="RepoViewController" customModule="Github_user_ios" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="RepoViewController" id="n0z-vU-xUB" customClass="MockRepoViewController" customModule="Github_user_iosTests" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2mr-Iz-6Nd">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="cu0-gg-cJD">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                                <rect key="frame" x="0.0" y="103" width="393" height="666"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CustomCell" id="Gem-cQ-3Co">
@@ -484,7 +484,6 @@
                         <outlet property="normalHeader" destination="MBK-d8-lL2" id="WFW-NN-gaj"/>
                         <outlet property="textView" destination="sc8-Ha-XXV" id="vPa-aW-PEA"/>
                         <outlet property="textViewEditor" destination="nqG-tA-pTp" id="FBb-CI-j9M"/>
-                        <segue destination="sQE-wb-gkC" kind="show" identifier="filetotext" id="ilb-ff-HV7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cy2-0Q-DSB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -588,22 +587,6 @@ Proin posuere, ex a aliquet rhoncus, ipsum eros posuere orci, id tincidunt ligul
             </objects>
             <point key="canvasLocation" x="4001" y="-101"/>
         </scene>
-        <!--Text View Controller-->
-        <scene sceneID="I1a-B3-9i0">
-            <objects>
-                <viewController id="sQE-wb-gkC" customClass="TextViewController" customModule="Github_user_ios" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="uC5-2C-uTn">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="wSO-To-cYA"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="06P-Ei-Sch"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zS1-mY-ujd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4754.9618320610689" y="-101.40845070422536"/>
-        </scene>
         <!--Navigation Controller-->
         <scene sceneID="Run-6Y-OwK">
             <objects>
@@ -629,7 +612,7 @@ Proin posuere, ex a aliquet rhoncus, ipsum eros posuere orci, id tincidunt ligul
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="nEp-91-hwp"/>
+        <segue reference="TBq-EX-dwl"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="1616872522462" width="1124" height="366"/>

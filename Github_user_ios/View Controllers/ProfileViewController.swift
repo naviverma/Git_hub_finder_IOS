@@ -15,6 +15,7 @@ class ProfileViewController: UIViewController{
     var updateTimer:Timer?
     var debugger:Int = 0
     var flag:Bool = true
+    var offlineflag:Bool = false
     
     @IBAction func Follow(_ sender: Any) {
         let alertController = UIAlertController(title: "FOLLOW", message: "This feature is not available yet", preferredStyle: .alert)
@@ -30,7 +31,7 @@ class ProfileViewController: UIViewController{
     // MARK: - Declarations
     var usernamePassedBylogin :String!
     public var userRepos: [GitHubRepo] = []
-    var userData: [Int] = [0,0,0,0]
+    var userData: [Any] = [0,0,0,0]
     var names: [String] = ["Followers","Following","Repos","Stars"]
     var totalStars:Int = 0
     
@@ -82,6 +83,7 @@ class ProfileViewController: UIViewController{
             (result,error) in
             DispatchQueue.main.async {
                 if error == "offline" || result == nil {
+                    self.offlineflag = true
                     if let bundleURL = Bundle.main.url(forResource: "CashedUserData", withExtension: "geojson") {
                         do {
                             let data = try Data(contentsOf: bundleURL)
@@ -109,7 +111,7 @@ class ProfileViewController: UIViewController{
             (result,error) in
             DispatchQueue.main.async {
                 if error == "offline" || result == nil {
-                    if let bundleURL = Bundle.main.url(forResource: "CashedContributorData", withExtension: "geojson") {
+                    if let bundleURL = Bundle.main.url(forResource: "CashedRepoData", withExtension: "geojson") {
                         do {
                             let data = try Data(contentsOf: bundleURL)
                             let userData = try JSONDecoder().decode([GitHubRepo].self, from: data)
@@ -290,7 +292,14 @@ extension ProfileViewController:UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = repoTable.cellForRow(at: indexPath)
+        if offlineflag == false{
             performSegue(withIdentifier: "profiletocontri", sender: cell)
+        }
+        else{
+            let alert = UIAlertController(title: "Error", message: "Check your internet.\nThis cashed data.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler:nil))
+            self.present(alert,animated: true,completion: nil)
+        }
         }
 }
 
@@ -310,7 +319,8 @@ extension ProfileViewController{
                 localStars += repo.stargazersCount ?? 0
             }
             self.totalStars = localStars
-            self.userData[3] = (self.totalStars)
+        var temp = RoundOff.roundoff(self.totalStars)
+            self.userData[3] = temp
             self.repoTable.reloadData()
             self.collectionView.reloadData()
     }
@@ -334,9 +344,12 @@ extension ProfileViewController{
                 }
             }
         }
-            self.userData[0] = result.followers ?? 0
-            self.userData[1] = result.following ?? 0
-            self.userData[2] = result.publicRepos ?? 0
+        var temp = RoundOff.roundoff(result.followers ?? 0)
+            self.userData[0] = temp
+        temp = RoundOff.roundoff(result.following ?? 0)
+            self.userData[1] = temp
+        temp = RoundOff.roundoff(result.publicRepos ?? 0)
+            self.userData[2] = temp
             self.collectionView.reloadData()
     }
 }

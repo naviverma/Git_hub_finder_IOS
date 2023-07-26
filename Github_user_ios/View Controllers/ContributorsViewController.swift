@@ -5,7 +5,6 @@ class ContributorsViewController:  UIViewController{
     @IBOutlet var contriHeader: UIView!
     @IBOutlet var contriTable: UITableView!
     @IBOutlet var segmentControllerFiles: UISegmentedControl!
-    
     @IBOutlet var codeBaseHeader: UIView!
     var usernamePassedByContri: String!
     var repoNamePassedByContri: String!

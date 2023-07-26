@@ -43,7 +43,7 @@ class CustomCellForRepoTableTableViewCell: UITableViewCell,UICollectionViewDeleg
         }
         self.reponame.text = reponame
         self.repoDescription.text = repoData.description ?? "No description"
-        if let avatarUrl = repoData.owner.avatarURL{
+        if let avatarUrl = repoData.owner?.avatarURL{
             let instance = Download()
             if CustomCellForRepoTableTableViewCell.downloadLabel == true{
                 instance.downloadImage(from: avatarUrl){
@@ -95,7 +95,7 @@ extension CustomCellForRepoTableTableViewCell:UICollectionViewDataSource{
                 cell.image.image = UIImage(named: images[1])
             case 3:
                 let date = repoData?.updatedAt
-                let foramatedDateVar = formatedDate(date!)
+                let foramatedDateVar = DateFormatterExplicit.formatedDate(date!)
                 cell.label.text = "\(foramatedDateVar)"
                 cell.image.image = UIImage(named: images[3])
             default:
@@ -105,64 +105,6 @@ extension CustomCellForRepoTableTableViewCell:UICollectionViewDataSource{
         return cell
     }
     
-    func formatedDate(_ dateString:String) -> String{
-        
-        let formatter = ISO8601DateFormatter()//becasue date is in ISO8601Date format
-        
-        if let date = formatter.date(from: dateString){
-            
-            let currentDate = Date()
-            let calandar = Calendar.current
-            
-            let components = calandar.dateComponents([.day,.month,.year,.weekOfMonth,.hour,.minute,.second], from: date, to: currentDate)
-            if let years = components.year,years > 0{
-                if years > 1 {
-                    return "\(years) years ago"
-                }
-                return "\(years) year ago"
-            }
-            if let months = components.month,months > 0{
-                if months > 1 {
-                    return "\(months) months ago"
-                }
-                return "\(months) month ago"
-            }
-            if let weeks = components.weekOfMonth,weeks > 0 {
-                if weeks > 1 {
-                    return "\(weeks) weeks ago"
-                }
-                return "\(weeks) week ago"
-            }
-            if let days = components.day,days > 0 {
-                if days > 1 {
-                    return "\(days) days ago"
-                }
-                return "\(days) day ago"
-            }
-            if let hours = components.hour,hours > 0 {
-                if hours > 1 {
-                    return "\(hours) hours ago"
-                }
-                return "\(hours) hour ago"
-            }
-            if let minutes = components.minute,minutes > 0 {
-                if minutes > 1 {
-                    return "\(minutes) mins ago"
-                }
-                return "\(minutes) min ago"
-            }
-            if let secs = components.second,secs > 0 {
-                if secs > 1 {
-                    return "\(secs) secs ago"
-                }
-                return "\(secs) sec ago"
-            }
-            
-        }
-        return "N/A"
-        
-    }
-
     
 }
 

@@ -50,7 +50,7 @@ struct GitHubRepo: Codable {
     let forksCount: Int?
     let updatedAt: String?
     let visibility: String?
-    let owner: Owner
+    let owner: Owner?
     
     enum CodingKeys: String, CodingKey {
         case name
