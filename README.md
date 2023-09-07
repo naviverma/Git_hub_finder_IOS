@@ -1,6 +1,6 @@
 # Git_hub_finder_IOS
 
-This is a training project for my IOS summer internship in paytm india limited.
+This is a training project for my IOS summer internship in paytm india.
 
 ## GitHub Viewer
 
@@ -10,11 +10,11 @@ GitHub Viewer is an application designed to provide an enriched view of GitHub u
 
 ### Key Features:
 
-- View detailed user profiles: username, bio, repository count, followers, total stars and following.
-- Access repository lists with essential details like repo name, repo description, language used, no of forks, no of stars and timestamp showing when the repo was updated.
-- Discover contributors of a specific repository and no of contributions they have done with their profile images.
-- View whole code base of the repository in folder structure including code images and Videos.
-- Sleek UI using TableView, CollectionView, NavigationController, and custom UI cells through Xib and a responsive UI that adapt it on all screen sizes and can adjust based on the orientation of the phone.
+- View detailed user profiles: username, bio, repository count, followers, total stars, and following.
+- Access repository lists with essential details like repo name, repo description, language used, number of forks, number of stars, and timestamp showing when the repo was updated.
+- Discover contributors of a specific repository and the number of contributions they have done with their profile images.
+- View the whole codebase of the repository in folder structure including code images and Videos.
+- Sleek UI using TableView, CollectionView, NavigationController, and custom UI cells through Xib and a responsive UI that adapts on all screen sizes and can adjust based on the orientation of the phone.
 - Implemented AVplayer for playing videos that are uploaded by the users on repositories.
 - Implemented Image Viewer for viewing images that are uploaded by the users on repositories.
 
@@ -53,19 +53,20 @@ Your contributions are always welcome! Here's how you can contribute:
 
 ### Dependency Setup with CocoaPods
 
-- Install CocoaPods (if not installed): Copy and paste the command below into your terminal:
-  - `sudo gem install cocoapods`
-- Navigate to Project & Initialize CocoaPods: Copy and paste the commands below:
-  - `cd path/to/your/project`
-  - `pod init`
-- Add Dependencies: In your Podfile, add the lines below:
-  - `pod 'Firebase/Analytics'`
-  - `pod 'Google-Mobile-Ads-SDK'`
-- Install & Open Workspace: Copy and paste the commands below:
-  - `pod install`
-  - `open YourProjectName.xcworkspace`
-- Integrate Firebase & Google Ads:
-  - Add GoogleService-Info.plist to your project.
-  - Initialize Firebase in AppDelegate.
-  - Follow Firebase & Google Ads docs for further setup.
+```bash
+# Install CocoaPods (if not installed)
+sudo gem install cocoapods
 
+# Navigate to Project & Initialize CocoaPods
+cd path/to/your/project
+pod init
+
+# Add Dependencies to your Podfile
+pod 'Firebase/Analytics'
+pod 'Google-Mobile-Ads-SDK'
+
+# Install & Open Workspace
+pod install
+open YourProjectName.xcworkspace
+
+Integrate Firebase & Google Ads: Follow Firebase & Google Ads documentation for further setup.
