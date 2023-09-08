@@ -54,31 +54,31 @@ Your contributions are always welcome! Here's how you can contribute:
 ### Dependency Setup with CocoaPods
 
 
-# Install CocoaPods (if not installed)
+### Install CocoaPods (if not installed)
 ```bash
 sudo gem install cocoapods
 ```
 
-# Navigate to Project & Initialize CocoaPods
+### Navigate to Project & Initialize CocoaPods
 ```bash
 cd path/to/your/project
 ```
-# Initialise the podfile
+### Initialise the podfile
 ```bash
 pod init
 ```
 
-# Add Dependencies to your Podfile
+### Add Dependencies to your Podfile
 ```bash
 pod 'Firebase/Analytics'
 pod 'Google-Mobile-Ads-SDK'
 ```
 
-# Install the pod
+### Install the pod
 ```bash
 pod install
 ```
-# Open the workspace
+### Open the workspace
 ```bash
 open YourProjectName.xcworkspace
 ```
