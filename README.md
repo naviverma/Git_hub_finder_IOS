@@ -53,20 +53,35 @@ Your contributions are always welcome! Here's how you can contribute:
 
 ### Dependency Setup with CocoaPods
 
-```bash
+
 # Install CocoaPods (if not installed)
+```bash
 sudo gem install cocoapods
+```
 
 # Navigate to Project & Initialize CocoaPods
+```bash
 cd path/to/your/project
+```
+# Initialise the podfile
+```bash
 pod init
+```
 
 # Add Dependencies to your Podfile
+```bash
 pod 'Firebase/Analytics'
 pod 'Google-Mobile-Ads-SDK'
+```
 
-# Install & Open Workspace
+# Install the pod
+```bash
 pod install
+```
+# Open the workspace
+```bash
 open YourProjectName.xcworkspace
+```
+
 
 Integrate Firebase & Google Ads: Follow Firebase & Google Ads documentation for further setup.
